@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Quiz Game</title>
+	<link rel="stylesheet" href="game.css">
+	<style>
+	@import url('https://fonts.googleapis.com/css?family=Itim');
+	</style>
+</head>
+<body>
+	<div class="main">
+	<h1 id="text1">- QUIZ GAME-</h1> 
+	<h1 id="text2">คําขวัญและสถานที่ท่องเที่ยวในประเทศไทย</h1>
+	<h1 id="text3"></h1>
+	<h1 id="number"></h1>
+	<h1 id="time"></h1>
+	<div class="btnmain">
+	<button id="ten" onclick="getRandom(10)">10 ข้อ</button>
+	<button id="twenty" onclick="getRandom(20)">20 ข้อ</button></div>
+
+	<div class="divquiz">
+		<div class="pic"></div>
+		<div class="quiz"></div>
+	</div>
+<br>
+<div class="choice1">
+<button id="btn1" onclick="checkresult(1)"><p id="c1" ></p></button>
+<button id="btn2" onclick="checkresult(2)"><p id="c2"></p></button></div>
+<div class="choice2">
+<button id="btn3" onclick="checkresult(3)"><p id="c3"></p></button>
+<button id="btn4" onclick="checkresult(4)"><p id="c4"></p></button></div>
+
+</div>
+<script src="jquery-3.3.1.min.js" charset="utf-8"></script>
+<script >
+	var random = [];
+	var score =0;
+	var result ="";
+	var number = 0;
+	var time = 0;
+	var btnresult = "";
+    var btnclick = "";
+    var interval;
+    var totaltime = 0;
+	var count=0;
+	for (var i =1;i<=5;i++){
+		$("#btn"+i).hide();
+	}
+	$(".divquiz").hide();
+
+	function getResponce(){
+		timer();
+		$(document).ready(function(){
+			$.ajax({
+				url: 'data.json',
+				method: 'GET',
+				success: function(responce){
+				
+			$(".main").css("height","600");
+			$(".divquiz").show();
+	
+			for (var j =1;j<=5;j++){
+				$("#btn"+j).show();
+				$("#btn"+j).css("background-color","rgb(204, 150, 255)");
+			}
+				
+				if (count == number){
+					getEndpage();
+				}else{
+				if (random[count] >= 30){
+					$(".pic").show();
+					$('.pic').html('<img src="' +responce[random[count]]['Pic']+ '" height="225px" width="450px">');
+					$('.quiz').css({"font-size":"30px","position":"static","padding-top":"90%"});
+					$('.quiz').html(responce[random[count]]['Quiz']);
+				}else{
+					$(".pic").hide();
+					$('.quiz').css({"font-size":"40px","top":"50%","position":"absolute","padding-top":"0%"});
+					$('.quiz').html(responce[random[count]]['Quiz']);
+				}
+
+				document.getElementById("c1").innerHTML = responce[random[count]]['Choice']['1'];
+				document.getElementById("c2").innerHTML = responce[random[count]]['Choice']['2'];
+				document.getElementById("c3").innerHTML = responce[random[count]]['Choice']['3'];
+				document.getElementById("c4").innerHTML = responce[random[count]]['Choice']['4'];
+				result = responce[random[count]]['Result'];
+				btnresult = "#btn"+result;
+
+				if (count < number){
+					count++;
+				}
+				$("#ten").hide();
+				$("#twenty").hide();
+				$("#text1").hide();
+				$("#text2").hide();
+				$("#number").html("ข้อ " + count+ "/" + number );
+				$("#time").text("เวลา: 10");
+				}
+				
+			}
+		});
+    });
+    }
+
+    function getRandom(num){
+    number = num;
+    for(var i = 0;i<num ; i++){
+        var rand = Math.floor(Math.random()*49);
+        if (random.length != num){
+        if(random.indexOf(rand) == -1){
+            random.push(rand);
+        }
+        else{
+         i--;
+        }}
+    } getResponce();
+   
+}
+
+    function checkresult(click){
+    	btnclick = "#btn"+click;
+    	if (click == result){
+    		score++;
+			$(btnresult).css("background-color","rgb(0, 220, 84)");
+			
+    	}else{
+    		$(btnclick).css("background-color","rgb(255, 0, 61)");
+    		$(btnresult).css("background-color","rgb(0, 220, 84)");
+ 
+    	}setTimeout(function(){	
+				getResponce();
+			}, 700);
+    	if (time == 9){
+    		totaltime += 1;
+    	}else{
+    	totaltime = totaltime + (10-time-1);
+    }
+    	clearInterval(interval);
+    }
+
+  
+
+    
+    function timer(){
+	time = 9;
+	interval = setInterval(function() {
+		document.getElementById("time").textContent = "เวลา: "+time;
+    if (time <= 0) {
+    	$(btnresult).css("background-color","rgb(0, 220, 84)");
+    	totaltime += 10;
+        clearInterval(interval);
+		setTimeout(function(){
+			getResponce();
+		}, 700);
+	}
+    else{
+		time--;
+		}
+		}, 1000);
+    }
+
+     function getEndpage(){
+    	clearInterval(interval);
+    	console.log(totaltime)
+    	if (totaltime >= 60 ){
+    		var min = Math.round(totaltime/60);
+    		var second = totaltime-(min*60);
+    		totaltime = min + "นาที " + second;
+    	}
+    	$("#text1").show();
+    	$("#text1").html("- จบเกม -");
+    	$("#text1").css({"font-size":"90px","padding-top":"8%"});
+    	$("#text2").show();
+    	$("#text2").html("คะแนน : "+score +"/" + number);
+    	$("#text3").show();
+    	$("#text3").html("ใช้เวลาทั้งหมด "+ totaltime +" วินาที")
+    	$(".quiz").hide();
+    	$(".pic").hide();
+    	$("#time").hide();
+    	$("#number").hide();
+    	for (var i =1;i<=5;i++){
+			$("#btn"+i).hide();
+		}
+}
+		 		
+</script>
+</body>
+</html>
