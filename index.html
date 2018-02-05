@@ -134,6 +134,7 @@
     		totaltime += 1;
     	}else{
     	totaltime = totaltime + (10-time-1);
+
     }
     	clearInterval(interval);
     }
@@ -144,7 +145,6 @@
     function timer(){
 	time = 10;
 	interval = setInterval(function() {
-		time--;
     if (time <= 0) {
     	$(btnresult).css("background-color","rgb(0, 220, 84)");
     	totaltime += 10;
@@ -153,18 +153,21 @@
 			getResponce();
 		}, 700);
 	}
-		
-		document.getElementById("time").textContent = "เวลา: "+time;
+    else{
+		time--;
+		}document.getElementById("time").textContent = "เวลา: "+time;
 		}, 1000);
+	console.log(totaltime);
     }
 
      function getEndpage(){
     	clearInterval(interval);
     	console.log(totaltime)
     	if (totaltime >= 60 ){
-    		var min = Math.round(totaltime/60);
+    		var min = Math.floor(totaltime/60);
+    		console.log(totaltime/60);
     		var second = totaltime-(min*60);
-    		totaltime = min + "นาที " + second;
+    		totaltime = min + " นาที " + second;
     	}
     	$("#text1").show();
     	$("#text1").html("- จบเกม -");
