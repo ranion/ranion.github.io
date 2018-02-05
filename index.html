@@ -142,9 +142,9 @@
 
     
     function timer(){
-	time = 9;
+	time = 10;
 	interval = setInterval(function() {
-		document.getElementById("time").textContent = "เวลา: "+time;
+		
     if (time <= 0) {
     	$(btnresult).css("background-color","rgb(0, 220, 84)");
     	totaltime += 10;
@@ -155,7 +155,7 @@
 	}
     else{
 		time--;
-		}
+		}document.getElementById("time").textContent = "เวลา: "+time;
 		}, 1000);
     }
 
