@@ -129,11 +129,11 @@
  
     	}setTimeout(function(){	
 				getResponce();
-			}, 700);
+			}, 600);
     	if (time == 10){
     		totaltime += 1;
     	}else{
-    	totaltime = totaltime + (10-time-1);
+    	totaltime = totaltime + (10-time);
 
     }
     	clearInterval(interval);
@@ -151,21 +151,18 @@
         clearInterval(interval);
 		setTimeout(function(){
 			getResponce();
-		}, 700);
+		}, 600);
 	}
     else{
 		time--;
 		}document.getElementById("time").textContent = "เวลา: "+time;
 		}, 1000);
-	console.log(totaltime);
     }
 
      function getEndpage(){
     	clearInterval(interval);
-    	console.log(totaltime)
     	if (totaltime >= 60 ){
     		var min = Math.floor(totaltime/60);
-    		console.log(totaltime/60);
     		var second = totaltime-(min*60);
     		totaltime = min + " นาที " + second;
     	}
